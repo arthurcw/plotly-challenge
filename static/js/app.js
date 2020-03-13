@@ -5,7 +5,6 @@ const data = d3.json("./data/samples.json");
 var dropDownMenu = d3.select("#selDataset");
 // Populate dropdown menu with test subject names
 data.then((d) => {
-    console.log(d);
     d.names.forEach(n => dropDownMenu.append("option").text(n));
 }).catch(error => console.log("can't fetch", error));
 
@@ -114,7 +113,6 @@ function updateBubbleChart(subjectID) {
 function updateGaugeChart(subjectID) {
     data.then((d) => {
         let filteredMetadata = d.metadata.filter(i => i.id == subjectID);
-        console.log("wash ", filteredMetadata[0].wfreq);
         
         var trace = [
             {
