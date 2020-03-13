@@ -10,6 +10,7 @@
     href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
     crossorigin="anonymous">
+  <link rel="stylesheet" href="./static/css/style.css">
 </head>
 
 <body>
@@ -22,30 +23,37 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-2">
-        <div class="well">
-          <h5>Test Subject ID No.:</h5>
+      <div class="col-lg-2">
+        <div class="well border rounded border-dark bg-light p-3 mb-2">
+          <h6>Test Subject ID No.:</h6>
           <select id="selDataset">
             <!-- populate dropdown menu here -->
           </select>
         </div>
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <h3 class="panel-title">Demographic Info</h3>
+        <div class="card">
+          <div class="card-header text-white bg-primary font-weight-bold">Demographic Info</div>
+          <div id="sample-metadata" class="card-body">
+            <!-- populate metadata  -->
           </div>
-          <div id="sample-metadata" class="panel-body"></div>
+            
         </div>
       </div>
-      <div class="col-md-5">
-        <div id="bar"></div>
+      <div class="col-lg-5">
+        <div id="bar">
+          <!-- insert bar chart -->
+        </div>
       </div>
-      <div class="col-md-5">
-        <div id="gauge"></div>
+      <div class="col-lg-5">
+        <div id="gauge">
+          <!-- insert gauge chart -->
+        </div>
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12">
-        <div id="bubble"></div>
+      <div class="col-lg-12 mt-5">
+        <div id="bubble">
+          <!-- insert bubble chart -->
+        </div>
       </div>
     </div>
   </div>
@@ -54,7 +62,6 @@
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="./static/js/app.js"></script>
   <script src="./data/samples.json"></script>
-  <!-- <script src="./static/js/bonus.js"></script> -->
 
 </body>
 

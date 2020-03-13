@@ -4,11 +4,9 @@ const data = d3.json("./data/samples.json");
 // use d3 to select drop down menu
 var dropDownMenu = d3.select("#selDataset");
 // Populate dropdown menu with test subject names
-data.then((data) => {
-    console.log(data);
-    data.names.forEach(n => {
-        dropDownMenu.append("option").text(n);
-    });
+data.then((d) => {
+    console.log(d);
+    d.names.forEach(n => dropDownMenu.append("option").text(n));
 }).catch(error => console.log("can't fetch", error));
 
 
@@ -34,6 +32,7 @@ function updateDemographicInfo(subjectID) {
     });
 }
 
+
 /**
  * Update bar chart using sample data
  * @param {*} id Test Subject ID 
@@ -56,12 +55,18 @@ function updateBarChart(subjectID) {
         }];
 
         let layout = {
-            xaxis: { title: "Sequencing Read Numbers" }
+            title: "<b>Top 10 OTUs</b>",
+            font: { size: 14 },
+            xaxis: { title: "Sequencing Read Numbers" },
+            margin: {t:50}
         }
 
-        Plotly.newPlot("bar", trace, layout);
+        let config = { responsive: true };
+
+        Plotly.newPlot("bar", trace, layout, config);
     });
 };
+
 
 /**
  * Update bubble chart using sample data
@@ -78,22 +83,29 @@ function updateBubbleChart(subjectID) {
             marker: {
                 size: filteredSamples[0].sample_values,
                 sizemode: "area",
-                sizeref: 0.3,
+                sizeref: 0.2,
                 color: filteredSamples[0].otu_ids,
+                colorscale: 'Portland',
                 opacity: 0.8
             },
             text: filteredSamples[0].otu_labels
         }]
 
         let layout = {
+            title: "<b>All OTU Counts</b>",
+            font: { size: 14 },
             xaxis: { title: "OTU ID" },
-            yaxis: { title: "Sequencing Read Numbers" }
+            yaxis: { title: "Sequencing Read Numbers" },
+            margin: {t:30}
         }
 
-        Plotly.newPlot("bubble", trace, layout);
+        let config = { responsive: true };
+
+        Plotly.newPlot("bubble", trace, layout, config);
         
     });
 };
+
 
 /**
  * Update gauge chart using metadata
@@ -108,11 +120,14 @@ function updateGaugeChart(subjectID) {
             {
               domain: { x: [0, 1], y: [0, 1] },
               value: +filteredMetadata[0].wfreq,
-              title: { text: "Scrubs per Week" },
+              title: { 
+                  text: "Scrubs per Week",
+                  font: { size: 18 } 
+                },
               type: "indicator",
               mode: "gauge+number",
               gauge: {
-                axis: { range: [null, 9] },
+                axis: { range: [0, 9] },
                 steps: [
                   { range: [0, 1], color: "rgba(255, 255, 255, 0)" },
                   { range: [1, 2], color: "rgba(232, 226, 202, 0.5)" },
@@ -121,35 +136,48 @@ function updateGaugeChart(subjectID) {
                   { range: [4, 5], color: "rgba(170, 202, 42, 0.5)" },
                   { range: [5, 6], color: "rgba(110, 154, 22, 0.5)" },
                   { range: [6, 7], color: "rgba(14, 127, 0, 0.5)" },
-                  { range: [7, 8], color: "rgba(202, 209, 95, .5)" },
-                  { range: [8, 9], color: "rgba(255, 255, 255, 0)" }
+                  { range: [7, 8], color: "rgba(0, 102, 0, 0.5)" },
+                  { range: [8, 9], color: "rgba(0, 51, 0, 0.5)" }
                 ],
+
               }
             }
           ];
           
-          var layout = { title: "Belly Button Washing Frequency" };
+          var layout = {
+              title: "<b>Belly Button Washing Frequency</b>",
+              font: { size: 14 }
+            };
 
-          Plotly.newPlot('gauge', trace, layout);
+          let config = { responsive: true };
+
+          Plotly.newPlot('gauge', trace, layout, config);
+
+    });
+};
+
+function pageRefresh() {
+    data.then((d)=> {
+        // selected test subject id
+        let selectedID = dropDownMenu.property("value");
+
+        // update demographic info
+        updateDemographicInfo(selectedID);
+
+        // update chart
+        updateBarChart(selectedID);
+
+        // bubble chart
+        updateBubbleChart(selectedID);
+
+        // gauge chart
+        updateGaugeChart(selectedID);
 
     });
 };
 
 // On call listener for dropdown menu
-dropDownMenu.on("change", function() {
-    // selected test subject id
-    let selectedID = dropDownMenu.property("value");
+dropDownMenu.on("change", pageRefresh);
 
-    // update demographic info
-    updateDemographicInfo(selectedID);
-
-    // update chart
-    updateBarChart(selectedID);
-
-    // bubble chart
-    updateBubbleChart(selectedID);
-
-    // gauge chart
-    updateGaugeChart(selectedID);
-    
-});
+// When page first loads, plot with first option in menu
+pageRefresh();
